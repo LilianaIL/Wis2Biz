@@ -1,0 +1,446 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <style>
+
+        .navbar {
+            background-color: #c7dcf3;
+        }
+
+        .alert,
+        .clien-detailse {
+            display: none;
+        }
+
+        .container {
+            margin-top: 4%;
+        }
+
+        #search {
+            width: 30%;
+        }
+
+        .spinner-border {
+            position: absolute;
+            left: 50%;
+            margin-top: 7.5rem;
+            margin-left: -1.5rem;
+            width: 7rem;
+            height: 7rem;
+        }
+
+        .cliend-field-detailse {
+            background: #e0edfb;
+            padding-top: 3%;
+            padding-bottom: 2%;
+        }
+
+        .client-name-detailse {
+            margin-bottom: 3%;
+        }
+
+        .weigths-table {
+            margin-top: 3%;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-light fixed-top flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/">Wis2Biz</a>
+    </nav>
+
+    <div class="container">
+        <div class="alert alert-danger" role="alert"></div>
+        <div class="alert alert-success" role="alert"></div>
+
+        <div class="row justify-content-md-center">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="panel panel-search">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" name="clientid" id="pasport" class="form-control" placeholder="pasport" value="">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="button" name="search" id="search" class="form-control btn btn-info btn-search" value="Search">
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                    <div class="panel-body">
+                        
+                        <div class="spinner-border text-info d-none load-detailse" role="status">                            
+                            <span class="sr-only">Loading...</span>
+                        </div>
+
+                        <div class="clien-detailse">
+                            <div class="row cliend-field-detailse">
+                                <div class="col-lg-12">
+                                    <fieldset>
+                                        <div class="row client-name-detailse">
+                                            <input type="hidden" id="currentWeight" value="" />
+                                            <input type="hidden" id="clientId" value="" />
+                                            <div class="col-md-8"><h3 id="clientName"></h3></div>
+                                            <div class="col-md-4">
+                                                <button type="button" class="btn btn-info modal-opener float-right"
+                                                        data-title="Add weight" data-action-button="Save" data-toggle="modal"
+                                                        data-target="#measuresModal">
+                                                    Add weight
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="d-inline-block font-weight-bold">Member Ship Start:</div>
+                                                <div class="d-inline-block" id="memberShipStart"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="d-inline-block font-weight-bold font-weight-bold">Next Payment Date:</div>
+                                                <div class="d-inline-block" id="nextPaymentDate"></div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="d-inline-block font-weight-bold">Height:</div>
+                                                <div class="d-inline-block" id="currentHeight"></div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="d-inline-block font-weight-bold">BMI:</div>
+                                                <div class="d-inline-block" id="currentBmi"></div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="row weigths-table">
+                                <div class="col-lg-12">
+                                    <table class="table table-condensed table-striped weights-tbl">
+                                        <thead><tr><th>Date</th><th>Weigth</th><th>Change from last weight</th><th></th><th></th></tr></thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- MODAL -->
+
+        <div class="modal fade" id="measuresModal" tabindex="-1" role="dialog" aria-labelledby="measuresModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-info text-white">
+                        <h4 class="modal-title"></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="weight-form" name="weight-form" role="form">
+                            <input type="hidden" id="measureID" name="measureID" value="0" />
+                            <input type="hidden" name="clientID" id="clientID" value="">
+                            <input type="hidden" name="parameterID" id="parameterID" value="">
+                            <input type="hidden" name="lastWeight" id="lastWeight" value="">
+                            <input type="hidden" name="changeDateTime" id="changeDateTime" value="">
+
+                            <div class="form-group">
+                                <input type="text" name="parameterValue" id="parameterValue" class="form-control" placeholder="weight" value="">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-info btn-default" data-dismiss="modal">Close</button>
+                        <button name="weight-submit" id="weight-submit" type="submit" class="btn btn-success btn-weight">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+    <script>
+        
+        async function GetClient(id) {
+
+            DeleteRows();
+            if (id == "" || id == undefined||id==null) {
+                $('.load-detailse').addClass('d-none');
+                $('.clien-detailse').hide();
+                $('.alert-danger').html("Please enter client pasport");
+                $('.alert-danger').show();
+                await sleep(2000);
+                $('.alert-danger').hide();
+            }
+            else {
+                const response = await fetch("/api/clients/GetClientDetails/" + id, {
+                    method: "GET",
+                    headers: { "Accept": "application/json" }
+                });
+                if (response.ok === true) {
+                    const result = await response.json();
+
+                    if (result.status) {
+                        var client = result.result;
+                        FillClientInfo(client);
+                        client.clientMeasures.forEach(measure => {
+                            $("tbody").append(row(measure));
+                        });
+                        $('.load-detailse').addClass('d-none');
+                        $('.clien-detailse').show();
+                    }
+                    else {
+                        $('.load-detailse').addClass('d-none');
+                        $('.clien-detailse').hide();
+                        $('.alert-danger').html(result.result);
+                        $('.alert-danger').show();
+                        await sleep(2000);
+                        $('.alert-danger').hide();
+                    }
+
+
+                }
+            }
+            
+
+        }
+
+        async function AddWeight(clientID, parameterID, parameterValue, lastWeight) {
+            url = "api/clients/AddWeight";
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    clientID: parseInt(clientID),
+                    parameterID: parseInt(parameterID),
+                    parameterValue: parseFloat(parameterValue),
+                    lastWeight: parseFloat(lastWeight)
+                })
+            });
+            if (response.ok === true) {
+                const result = await response.json();
+                if (result.status) {
+                    $("tbody").prepend(row(result.result))
+                    UpdateBMI(result.result.parameterValue);
+                    $('#measuresModal').modal('hide');
+                }
+                
+            }
+            else {
+                $('.alert-danger').html(result.result);
+                $('.alert-danger').show();
+                await sleep(2000);
+                $('.alert-danger').hide();
+            }
+        }
+
+        async function EditWeight(measureID, clientID, parameterID, parameterValue, lastWeight, changeDateTime) {
+            url = "api/clients/EditWeight";
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    measureID: parseInt(measureID),
+                    clientID: parseInt(clientID),
+                    parameterID: parseInt(parameterID),
+                    parameterValue: parseFloat(parameterValue),
+                    lastWeight: parseFloat(lastWeight),
+                    changeDateTime: changeDateTime
+                })
+            });
+            if (response.ok === true) {
+                const result = await response.json();
+                if (result.status) {
+                    UpdateBMI(result.result.value[0].parameterValue);
+                    DeleteRows();
+
+                    result.result.value.forEach(measure => {
+                        $("tbody").append(row(measure));
+                    });
+
+                    $('#measuresModal').modal('hide');
+                }
+                else {
+                    $('.alert-danger').html(result.result);
+                    $('.alert-danger').show();
+                    await sleep(2000);
+                    $('.alert-danger').hide();
+                }
+
+                
+            }
+        }
+
+        async function DeleteWeight(id) {
+            const response = await fetch("/api/clients/DeleteWeight/" + id, {
+                method: "DELETE",
+                headers: { "Accept": "application/json" }
+            });
+            if (response.ok === true) {
+                const result = await response.json();
+                if (result.result) {
+                    UpdateBMI(result.result.value[0].parameterValue);
+                    DeleteRows();
+
+                    result.result.value.forEach(measure => {
+                        $("tbody").append(row(measure));
+                    });
+                }
+                else {
+                    $('.alert-danger').html(result.result);
+                    $('.alert-danger').show();
+                    await sleep(2000);
+                    $('.alert-danger').hide();
+                }
+                
+            }
+        }
+
+        $("#weight-submit").on("click", function (e) {
+            e.preventDefault();
+
+            var measureID = $("#measureID").val();
+            var clientID = $("#clientID").val();
+            var parameterID = $("#parameterID").val();
+            var parameterValue = $("#parameterValue").val();
+            var lastWeight = $('#lastWeight').val();
+            var changeDateTime = $('#changeDateTime').val();
+
+            if (measureID == 0)
+                AddWeight(clientID, parameterID, parameterValue, lastWeight);
+            else
+                EditWeight(measureID, clientID, parameterID, parameterValue, lastWeight, changeDateTime);
+        });
+
+        $('#search').click(function (e) {
+
+            $('.load-detailse').removeClass('d-none');
+
+            var id = $("#pasport").val();
+            GetClient(id);
+
+        });
+
+        $('.modal-opener').click(function () {
+            $(".modal-title").html($(this).data('title'));
+            FillModalFields(0, $("#clientId").val(), "1", $("#currentWeight").val())
+        });
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function row(measure) {
+
+            var tr = $("<tr>");
+            tr.attr("data-rowid", measure.measureID);
+
+            var dateTd = $("<td>");
+            dateTd.append(ConvertDate(measure.changeDateTime));
+            tr.append(dateTd);
+
+            var weightTd = $("<td>");
+            weightTd.append(measure.parameterValue);
+            tr.append(weightTd);
+
+            var changeFromLastWeightTd = $("<td>");
+            changeFromLastWeightTd.append(measure.changeFromLastWeight.toFixed(2));
+            tr.append(changeFromLastWeightTd);
+
+            var linksTd = $("<td>");
+
+            var editLink = $('<button type="button" class="btn btn-info btn-sm modal-opener">')
+            editLink.attr("data-id", measure.measureID);
+            editLink.attr("data-title", "Edit weight");
+            editLink.attr("data-action-button", "Save");
+            editLink.attr("data-toggle", "modal");
+            editLink.attr("data-target", "#measuresModal");
+            editLink.attr("style", "cursor:pointer;padding:7px;width:70px;");
+            editLink.append("Edit");
+            editLink.on("click", function (e) {
+                e.preventDefault();
+                $(".modal-title").html($(this).data('title'));
+                FillModalFields(measure.measureID, measure.clientID, measure.parameterID, measure.lastWeight, measure.changeDateTime, measure.parameterValue);
+            });
+            linksTd.append(editLink);
+            tr.append(linksTd);
+
+            linksTd = $("<td>");
+
+            const removeLink = $('<button type="button" class="btn btn-danger btn-sm">');
+            removeLink.attr("data-id", measure.measureID);
+            removeLink.attr("style", "cursor:pointer;padding:7px;width:70px;");
+            removeLink.append("Delete");
+            removeLink.on("click", function (e) {
+
+                e.preventDefault();
+                DeleteWeight(measure.measureID);
+            });
+
+            linksTd.append(removeLink);
+            tr.append(linksTd);
+
+            return tr;
+        }
+
+        function DeleteRows() {
+            $(".weights-tbl").find("tr:not(:first)").remove();
+        }
+
+        function FillClientInfo(client) {
+            var bmi = 0;
+            if (client.bmi != null) {
+                bmi = client.bmi.toFixed(2);
+            }
+            $("#clientName").html(client.clientFullName);
+            $("#memberShipStart").html(ConvertDate(client.memberShipStartDate));
+            $("#nextPaymentDate").html(ConvertDate(client.nextPaymentDate));
+            $("#currentHeight").html(client.height);
+            $("#currentBmi").html(bmi);
+            $('#currentWeight').val(client.currentWeight);
+            $('#clientId').val(client.clientID);
+        }
+
+        function ConvertDate(datestr) {
+            var date = new Date(datestr)
+            return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+        }
+
+        function UpdateBMI(weight) {
+            var height = $("#currentHeight").html();
+            if (height != undefined && height != 0 && height != null) {
+                var bmi = weight / Math.pow(parseFloat(height) / 100, 2);
+                $("#currentBmi").html(bmi.toFixed(2));
+            }
+        }
+
+        function FillModalFields(measureID, clientID, parameterID, currentWeight, changeDateTime, parameterValue) {
+            $("#measureID").val(measureID);
+            $('#clientID').val(clientID);
+            $('#parameterID').val(parameterID);
+            $("#lastWeight").val(currentWeight);
+            $('#changeDateTime').val(changeDateTime);
+            $('#parameterValue').val(parameterValue);
+        }
+
+    </script>
+
+</body>
+</html>
